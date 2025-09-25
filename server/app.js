@@ -9,6 +9,6 @@ app.use("/*", cors());
 app.use("/*", logger());
 
 //define path
-app.get("/", (c) => c.json({message: "Hello world!"}));
+app.get("/", (c) => c.json({message: "Hello world!" }));
 
 export default app;
