@@ -27,5 +27,18 @@ export const options = {
 export const loadPage = async () => {
   const page = await browser.newPage();
 
-  await page.goto("http://client:4321");
+  try {
+    await page.goto("http://client:4321");
+  } finally {
+    await page.close();
+  }
+  
+};
+
+export const getServerRoot = async () => {
+  const url = "http://server:8000/";
+  const res = http.get(url) //request uz serveri
+
+  check(res, {"status is 200": (r) => r.status === 200});
+
 };
