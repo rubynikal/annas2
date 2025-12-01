@@ -29,4 +29,21 @@ app.get("/cache-demo", async (c) => {
     return c.json({message: "cachedemo"});
 })
 
+//cache uz route hello
+app.get("/hello/*", cache({
+    cacheName: "hello-cache",
+    wait: true,
+}))
+
+app.get("/hello/:name", async (c) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return c.json({message: `hello ${c.req.param("name")}`});
+})
+
+//clear hello-cache
+app.post("/hello", async (c) => {
+    await caches.delete("hello-cache");
+    return c.json({message: "Hello cache cleared"})
+})
+
 export default app;
