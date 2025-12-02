@@ -2,10 +2,25 @@ import { Hono } from '@hono/hono';
 import { cors } from '@hono/hono/cors';
 import { logger } from '@hono/hono/logger';
 import postgres from "postgres";
-import { cache } from "@hono/hono/cache";
+import { Redis } from "ioredis";
+import { redisCacheMiddleware } from './cache-middleware.js';
 
 const app = new Hono();
 const sql = postgres();
+const redis = new Redis(6379, "redis");
+
+app.get("/redis-test", async (c) =>{
+    let count = await redis.get("test");
+    if (!count){
+        count = 0;
+    } else {
+        count = Number(count);
+    }
+
+    count++;
+    await redis.set("test", count);
+    return c.json({count});
+})
 
 //cors un logger added to all (*)
 app.use("/*", cors()); 
@@ -18,32 +33,18 @@ app.get("/todos", async (c) => {
     return c.json(todos);
 })
 
-app.get("/cache-demo", cache({
-    cacheName: "demo-cache",
-    wait: true,
-}))
+app.get(
+  "/hello/*",
+  redisCacheMiddleware,
+);
 
-//cache
-app.get("/cache-demo", async (c) => {
+app.get(
+  "/hello/:name",
+  async (c) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    return c.json({message: "cachedemo"});
-})
-
-//cache uz route hello
-app.get("/hello/*", cache({
-    cacheName: "hello-cache",
-    wait: true,
-}))
-
-app.get("/hello/:name", async (c) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return c.json({message: `hello ${c.req.param("name")}`});
-})
-
-//clear hello-cache
-app.post("/hello", async (c) => {
-    await caches.delete("hello-cache");
-    return c.json({message: "Hello cache cleared"})
-})
+    return c.json({ message: `Hello ${c.req.param("name")}!` });
+  },
+);
 
 export default app;
+export {redis};
