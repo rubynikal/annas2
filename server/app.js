@@ -26,6 +26,12 @@ app.get("/redis-test", async (c) =>{
 app.use("/*", cors()); 
 app.use("/*", logger());
 
+const REPLICA_ID = crypto.randomUUID();
+app.use("+", async (c, next) =>{
+  c.res.headers.set("X-Replica-ID", REPLICA_ID);
+  await next();
+  });
+
 //define path
 app.get("/", (c) => c.json({message: "Hello world!" }));
 app.get("/todos", async (c) => {
