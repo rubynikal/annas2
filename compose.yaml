@@ -44,6 +44,17 @@ services:
       -c shared_preload_libraries=auto_explain,pg_stat_statements
       -c auto_explain.log_min_duration=10
 
+  traefik:
+    image: traefik:v3.3
+    command:
+      - '--api.insecure=true'
+      - '--providers.docker=true'
+      - '--entrypoints.web.address=:12345'
+    ports:
+      - '8080:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+
   database-migrations:
     image: flyway/flyway:10
     env_file:
@@ -53,11 +64,14 @@ services:
     volumes:
       - ./database-migrations:/flyway/sql
     command: -connectRetries=60 -baselineOnMigrate=true migrate
+    labels:
+      - 'traefik.enable=false'
   
   redis:
     image: redis:7.4.2
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
 volumes:
   node_modules:
