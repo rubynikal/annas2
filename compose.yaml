@@ -12,6 +12,11 @@ services:
       - database 
     deploy:
       replicas: 2 
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.server-router.entrypoint=web'
+      - 'traefik.http.routers.server-router.rule=PathPrefix(`/`)'
+      - 'traefik.http.services.server-service.loadbalancer.server.port=8000'
   client:
     build: client
     restart: unless-stopped
