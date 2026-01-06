@@ -8,6 +8,7 @@ import { redisCacheMiddleware } from './cache-middleware.js';
 const app = new Hono();
 const sql = postgres();
 const redis = new Redis(6379, "redis");
+const REPLICA_ID = crypto.randomUUID();
 
 app.get("/redis-test", async (c) =>{
     let count = await redis.get("test");
@@ -26,11 +27,10 @@ app.get("/redis-test", async (c) =>{
 app.use("/*", cors()); 
 app.use("/*", logger());
 
-const REPLICA_ID = crypto.randomUUID();
-app.use("+", async (c, next) =>{
-  c.res.headers.set("X-Replica-ID", REPLICA_ID);
+app.use("/*", async (c, next) =>{
+  c.res.headers.set("X-Replica-Id", REPLICA_ID);
   await next();
-  });
+});
 
 //define path
 app.get("/", (c) => c.json({message: "Hello world!" }));
@@ -39,10 +39,10 @@ app.get("/todos", async (c) => {
     return c.json(todos);
 })
 
-app.get(
-  "/hello/*",
-  redisCacheMiddleware,
-);
+// app.get(
+//   "/hello/*",
+//   redisCacheMiddleware,
+// );
 
 app.get(
   "/hello/:name",
