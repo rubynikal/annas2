@@ -52,5 +52,13 @@ app.get(
   },
 );
 
+app.post("/users/:param", async (c) => {
+  const param = c.req.param("param");
+  await sql`INSERT INTO users (name) VALUES (${param})`;
+  return c.json({ message: `Hello ${param}!` });
+  },
+);
+
+
 export default app;
 export {redis};
