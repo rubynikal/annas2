@@ -4,6 +4,7 @@ import { logger } from '@hono/hono/logger';
 import postgres from "postgres";
 import { Redis } from "ioredis";
 import { redisCacheMiddleware } from './cache-middleware.js';
+import { redisProducer } from './redis-queue.js';
 
 const app = new Hono();
 const sql = postgres();
@@ -54,8 +55,10 @@ app.get(
 
 app.post("/users/:param", async (c) => {
   const param = c.req.param("param");
-  await sql`INSERT INTO users (name) VALUES (${param})`;
-  return c.json({ message: `Hello ${param}!` });
+  console.log("IELIEK RINdaa");
+  await redisProducer.lpush('users', JSON.stringify({param})); //left push from redis
+  c.status(202); //accepted
+  return c.body('Accepted');
   },
 );
 
