@@ -5,6 +5,8 @@ import postgres from "postgres";
 import { Redis } from "ioredis";
 import { redisCacheMiddleware } from './cache-middleware.js';
 import { redisProducer } from './redis-queue.js';
+import { ssrHandler } from './ssr-example.js';
+import { serveStatic } from '@hono/hono/deno';
 
 const app = new Hono();
 const sql = postgres();
@@ -62,6 +64,18 @@ app.post("/users/:param", async (c) => {
   },
 );
 
+app.get('/ssr', ssrHandler);
+
+app.use('/public/*', serveStatic({ root: '.'}));
+
+app.get('/items', async (c) => {
+  const items = [
+    { name: 'apple'},
+    { name : 'pear'},
+    { name: 'hmmmmmmm'}
+  ];
+  return c.json(items);
+})
 
 export default app;
 export {redis};
