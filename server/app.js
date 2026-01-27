@@ -7,8 +7,10 @@ import { redisCacheMiddleware } from './cache-middleware.js';
 import { redisProducer } from './redis-queue.js';
 import { ssrHandler } from './ssr-example.js';
 import { serveStatic } from '@hono/hono/deno';
+import { registerHybridRoute } from './hybrid-rendering.js';
 
 const app = new Hono();
+registerHybridRoute(app);
 const sql = postgres();
 const redis = new Redis(6379, "redis");
 const REPLICA_ID = crypto.randomUUID();

@@ -5,7 +5,7 @@ services:
     volumes:
       - ./server:/app
     ports:
-      - 8000-8001:8000 #port is not exposed - not accessable from curl
+      - 8000:8000 #port is not exposed - not accessable from curl
     env_file:
       - project.env
     depends_on:
