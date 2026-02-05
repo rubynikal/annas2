@@ -29,8 +29,6 @@ services:
     volumes:
       - ./client:/app
       - node_modules:/app/node_modules 
-    ports:
-      - 4321:4321
     depends_on:
       - server
     labels:
