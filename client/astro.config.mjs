@@ -5,5 +5,6 @@ import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
 export default defineConfig({
-    adapter: deno(),
+  adapter: deno(),
+  integrations: [svelte()],
 });
