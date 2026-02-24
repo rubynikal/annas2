@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@deno/astro-adapter": "^0.3.2",
-    "astro": "^5.13.10"
+    "astro": "^5.13.10",
+    "deno": "^2.6.8",
+    "svelte": "^5.53.3"
   }
 }
