@@ -9,8 +9,11 @@ import { ssrHandler } from './ssr-example.js';
 import { serveStatic } from '@hono/hono/deno';
 import { registerHybridRoute } from './hybrid-rendering.js';
 import { registerApiRoutes } from './api.js';
+import { registerSSERoute } from './sse-example.js';
 
 const app = new Hono();
+app.use("/*", cors()); 
+registerSSERoute(app);
 registerHybridRoute(app);
 registerApiRoutes(app);
 const sql = postgres();
@@ -31,7 +34,6 @@ app.get("/redis-test", async (c) =>{
 })
 
 //cors un logger added to all (*)
-app.use("/*", cors()); 
 app.use("/*", logger());
 
 app.use("/*", async (c, next) =>{
