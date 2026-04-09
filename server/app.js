@@ -10,12 +10,14 @@ import { serveStatic } from '@hono/hono/deno';
 import { registerHybridRoute } from './hybrid-rendering.js';
 import { registerApiRoutes } from './api.js';
 import { registerSSERoute } from './sse-example.js';
+import { registerSSEChat } from './sse-chat.js';
 
 const app = new Hono();
 app.use("/*", cors()); 
 registerSSERoute(app);
 registerHybridRoute(app);
 registerApiRoutes(app);
+registerSSEChat(app);
 const sql = postgres();
 const redis = new Redis(6379, "redis");
 const REPLICA_ID = crypto.randomUUID();
