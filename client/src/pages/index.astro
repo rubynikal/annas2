@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import FirstSvelteComponent from '../components/FirstSvelteComponent.svelte';
 import SSEexample from '../components/SSEexample.svelte';
 import SSEChat from '../components/SSEChat.svelte';
+import WSExample from '../components/WSExample.svelte';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -16,4 +17,5 @@ import SSEChat from '../components/SSEChat.svelte';
 	<FirstSvelteComponent client:visible/>
 	<SSEexample client:visible />
 	<SSEChat client:visible />
+	<WSExample client:visible />
 </Layout>

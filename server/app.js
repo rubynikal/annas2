@@ -11,8 +11,10 @@ import { registerHybridRoute } from './hybrid-rendering.js';
 import { registerApiRoutes } from './api.js';
 import { registerSSERoute } from './sse-example.js';
 import { registerSSEChat } from './sse-chat.js';
+import { registerWSRoute } from './ws-chat.js';
 
 const app = new Hono();
+registerWSRoute(app);
 app.use("/*", cors()); 
 registerSSERoute(app);
 registerHybridRoute(app);
