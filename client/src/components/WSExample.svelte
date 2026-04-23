@@ -1,7 +1,14 @@
 <script>
     let message = $state("");
-    let messageFromServer = $state("");
+    let messages = $state([]);
     let connection;
+
+    const reconnect = () => {
+        setTimeout(() => {
+            connection.close();
+            openConnection();
+        }, 500);
+    }
 
     const openConnection = async() => {
         connection = new WebSocket("/api/pings/ws");
@@ -9,13 +16,20 @@
             messageFromServer = "Connected!"
         }
         connection.onmessage = (event) => {
-            messageFromServer = event.data
+            const newMessage = JSON.parse(event.data);
+            messages = [newMessage, ...messages];
+        }
+        connection.onclose = () => {
+            reconnect();
+        }
+        connection.onerror = () => {
+            reconnect();
         }
     }
 
     const sendMessage = async () => {
-        connection.send(message);
-        mesage = "";
+        connection.send(JSON.stringify({message}));
+        message = "";
     } 
 
 
@@ -30,4 +44,8 @@
 <input type="text" bind:value={message}>
 <button onclick={()=>sendMessage()}>Send</button>
 
-<p>Test: {messageFromServer}</p>
+<ul>
+    {#each messages as messageItem}
+    <li>{messageItem.message}</li>
+    {/each}
+</ul>
